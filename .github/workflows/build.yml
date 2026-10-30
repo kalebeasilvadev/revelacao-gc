@@ -1,0 +1,82 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.nome }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            nome: Windows
+          - os: macos-latest
+            nome: macOS
+          - os: ubuntu-22.04
+            nome: Linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Bibliotecas do sistema (Linux)
+        if: runner.os == 'Linux'
+        run: >
+          sudo apt-get update && sudo apt-get install -y xvfb libegl1 libgl1 libxkbcommon-x11-0 libxcb-cursor0
+          libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0
+          libxcb-xinerama0 libxcb-xkb1 libnss3 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libasound2
+
+      - name: Dependências Python
+        run: uv sync --python 3.13 --frozen
+
+      - name: Empacotar
+        run: uv run python scripts/build.py
+
+      - name: Teste de fumaça
+        if: runner.os != 'Linux'
+        run: uv run python scripts/teste_fumaca.py
+
+      - name: Teste de fumaça (tela virtual)
+        if: runner.os == 'Linux'
+        env:
+          QTWEBENGINE_CHROMIUM_FLAGS: --no-sandbox
+        run: xvfb-run -a -s "-screen 0 1920x1080x24" uv run python scripts/teste_fumaca.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Revelacao-GC-${{ matrix.nome }}
+          path: dist/pacotes/*
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: pacotes
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: pacotes/*
+          generate_release_notes: true
+          body: |
+            ## Downloads
+
+            | Sistema | Arquivo |
+            |---|---|
+            | Windows 10/11 (64 bits) | `Revelacao-GC-windows-x64.exe` |
+            | macOS (Apple Silicon: M1, M2, M3, M4) | `Revelacao-GC-macos-arm64.zip` |
+            | Linux (64 bits) | `Revelacao-GC-linux-x64.tar.gz` |
+
+            Passo a passo de instalação e uso: [TUTORIAL](https://github.com/${{ github.repository }}/blob/main/docs/TUTORIAL.md)

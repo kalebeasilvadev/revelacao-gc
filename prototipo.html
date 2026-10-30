@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="matrix">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revelação dos GCs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&family=Orbitron:wght@500;700;900&family=Exo+2:wght@400;600;700&family=Press+Start+2P&family=Chakra+Petch:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Palco temático: cada tema redefine os tokens abaixo; o fundo animado roda num canvas fixo atrás das telas */
+:root,[data-tema=matrix]{
+  color-scheme:dark;
+  --bg:#020703; --bg2:#030a05; --panel:#06140b; --line:#124a26; --tx:#c9ffd9; --mut:#5fae7b; --nm:#eafff0;
+  --ac:#39ff7a; --ac2:#00b347; --ok:#39ff7a; --danger:#ff6b6b; --on-ac:#00170a;
+  --ov:rgba(1,6,2,.8); --mix:30%;
+  --fd:"Share Tech Mono",ui-monospace,Menlo,monospace; --fb:"IBM Plex Mono",ui-monospace,Menlo,monospace; --fh:"Share Tech Mono",ui-monospace,monospace;
+  --ds:1.3; --hz:1.35; --tt:uppercase; --ls:.1em; --rad:0px; --avr:0px;
+  --hsh:0 0 16px color-mix(in srgb,var(--ac) 60%,transparent); --gl:14px; --fsh:0 0 0 1px #000;
+  --in:var(--ac); --inbg:rgba(0,0,0,.72); --prompt:">"; --inpl:64px; --f1:#05190c; --f2:#010603;
+  --bbg:transparent; --btx:var(--ac); --bbd:var(--ac); --bsh:0 0 24px color-mix(in srgb,var(--ac) 35%,transparent);
+  --fxo:.55;
+}
+[data-tema=tech]{
+  color-scheme:dark;
+  --bg:#040814; --bg2:#070d1c; --panel:#0b1428; --line:#1d3760; --tx:#e6f3ff; --mut:#86a3c9; --nm:#ffffff;
+  --ac:#3cc8ff; --ac2:#7b5cff; --ok:#4dffd2; --danger:#ff5c7a; --on-ac:#021018;
+  --ov:rgba(3,7,18,.82); --mix:35%;
+  --fd:"Orbitron",system-ui,sans-serif; --fb:"Exo 2",system-ui,sans-serif; --fh:"Orbitron",system-ui,sans-serif;
+  --ds:1.05; --hz:1.1; --tt:uppercase; --ls:.14em; --rad:3px; --avr:50%;
+  --hsh:0 0 24px color-mix(in srgb,var(--ac) 55%,transparent); --gl:18px; --fsh:0 0 0 1px color-mix(in srgb,var(--ac) 35%,transparent);
+  --in:var(--tx); --inbg:rgba(10,25,50,.6); --prompt:"›"; --inpl:60px; --f1:#0d1b38; --f2:#060b19;
+  --bbg:color-mix(in srgb,var(--ac) 12%,transparent); --btx:var(--ac); --bbd:var(--ac); --bsh:0 0 30px color-mix(in srgb,var(--ac) 35%,transparent);
+  --fxo:.75;
+}
+[data-tema=arcade]{
+  color-scheme:dark;
+  --bg:#07051a; --bg2:#0c0924; --panel:#141036; --line:#2b2470; --tx:#eef0ff; --mut:#9a97cc; --nm:#ffffff;
+  --ac:#FFE14D; --ac2:#ff2bd6; --ok:#3dff9a; --danger:#ff4d6d; --on-ac:#1a1400;
+  --ov:rgba(5,4,15,.92); --mix:45%;
+  --fd:"Press Start 2P",ui-monospace,monospace; --fb:"Chakra Petch",system-ui,sans-serif; --fh:"Press Start 2P",ui-monospace,monospace;
+  --ds:1; --hz:1; --tt:uppercase; --ls:.04em; --rad:4px; --avr:4px;
+  --hsh:0 0 14px color-mix(in srgb,var(--ac) 70%,transparent),4px 4px 0 var(--ac2); --gl:18px; --fsh:0 0 0 4px #000;
+  --in:var(--ok); --inbg:rgba(0,0,0,.55); --prompt:">"; --inpl:64px; --f1:#1d1650; --f2:#0d0a2a;
+  --bbg:var(--ac); --btx:var(--on-ac); --bbd:var(--ac); --bsh:0 0 30px color-mix(in srgb,var(--ac) 60%,transparent),4px 4px 0 var(--ac2);
+  --fxo:1;
+}
+[data-tema=gala]{
+  color-scheme:dark;
+  --bg:#0c0a08; --bg2:#14100c; --panel:#1c1712; --line:#3d3123; --tx:#f6efe3; --mut:#b5a68e; --nm:var(--ac);
+  --ac:#e2b866; --ac2:#9c6b2f; --ok:#a8d8a0; --danger:#e8806a; --on-ac:#1c1408;
+  --ov:rgba(10,8,6,.86); --mix:26%;
+  --fd:"Cormorant Garamond",Georgia,serif; --fb:"Manrope",system-ui,sans-serif; --fh:"Manrope",system-ui,sans-serif;
+  --ds:1.9; --hz:1.15; --tt:none; --ls:.22em; --rad:14px; --avr:50%;
+  --hsh:0 2px 30px color-mix(in srgb,var(--ac) 30%,transparent); --gl:0px; --fsh:0 10px 40px rgba(0,0,0,.5);
+  --in:var(--tx); --inbg:rgba(255,255,255,.04); --prompt:""; --inpl:24px; --f1:#251d15; --f2:#110d09;
+  --bbg:transparent; --btx:var(--ac); --bbd:transparent; --bsh:none;
+  --fxo:.9;
+}
+[data-tema=claro]{
+  color-scheme:light;
+  --bg:#f3f5fa; --bg2:#eceff6; --panel:#ffffff; --line:#d6dbe8; --tx:#131a2c; --mut:#5b6580; --nm:var(--tx);
+  --ac:#2f54eb; --ac2:#ff6b4a; --ok:#11804c; --danger:#d23a3a; --on-ac:#ffffff;
+  --ov:rgba(243,245,250,.95); --mix:20%;
+  --fd:"Bricolage Grotesque",system-ui,sans-serif; --fb:"Manrope",system-ui,sans-serif; --fh:"Manrope",system-ui,sans-serif;
+  --ds:1.6; --hz:1.15; --tt:none; --ls:.16em; --rad:16px; --avr:50%;
+  --hsh:none; --gl:0px; --fsh:0 12px 34px rgba(19,26,44,.14);
+  --in:var(--tx); --inbg:#ffffff; --prompt:""; --inpl:24px; --f1:#ffffff; --f2:#e8ecf6;
+  --bbg:var(--ac); --btx:var(--on-ac); --bbd:var(--ac); --bsh:0 10px 30px color-mix(in srgb,var(--ac) 30%,transparent);
+  --fxo:0;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:var(--fxo)}
+body:not(.palco) #fx{display:none}
+.screen{position:relative;z-index:1;min-height:100vh;padding-top:52px}
+body.present .screen{padding-top:0}
+html[data-tema=arcade] body.palco::after,html[data-tema=matrix] body.palco::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:250;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}
+
+nav{position:fixed;inset:0 0 auto 0;height:52px;display:flex;align-items:center;gap:6px;padding:0 16px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:50}
+nav .brand{font-family:var(--fh);font-size:calc(11px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--ac);margin-right:12px;white-space:nowrap}
+nav button{background:none;border:1px solid transparent;border-radius:4px;padding:6px 12px;cursor:pointer;color:var(--mut);white-space:nowrap}
+nav button.on{color:var(--tx);border-color:var(--line);background:var(--panel)}
+nav .keys{margin-left:auto;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.present nav{display:none}
+
+.btn{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px 14px;cursor:pointer}
+.btn:hover{border-color:var(--mut)}
+.btn.pri{background:var(--ac);color:var(--on-ac);border-color:var(--ac);font-weight:700}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.ghost{background:none}
+.btn.danger{color:var(--danger)}
+
+/* ---------- admin ---------- */
+#admin{background:var(--bg2)}
+.adm{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+.adm h2{font-family:var(--fh);font-size:calc(13px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;line-height:1.5;margin:36px 0 14px;color:var(--ac)}
+.adm h2:first-child{margin-top:8px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px}
+.adm label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+.adm input:not([type=color]):not([type=checkbox]),.adm select,.adm textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+.adm textarea{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:160px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.gc-ed{border-top:4px solid var(--c)}
+.gc-ed input[type=color]{width:42px;height:38px;border:none;background:none;padding:0;cursor:pointer}
+.lid-ed{margin-top:8px;flex-wrap:nowrap}
+.lid-ed .grow{min-width:0}
+.mf{display:flex;align-items:center;gap:6px}
+.mf img,.mf video,.mf .ph{width:48px;height:48px;border-radius:4px;object-fit:cover;background:var(--bg);border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--mut);text-align:center}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:12px;color:var(--mut);font-weight:600;padding:6px}
+.tbl td{padding:6px;border-top:1px solid var(--line);vertical-align:middle}
+.tbl-wrap{overflow-x:auto}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--bg);color:var(--mut);white-space:nowrap}
+.tag.ok{color:var(--ok)}
+.note{font-size:13px;color:var(--mut);margin:6px 0 0}
+.savestate{position:fixed;right:16px;bottom:16px;font-size:12px;color:var(--mut);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 12px;z-index:260}
+.reset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.reset-card{text-align:left;padding:14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.reset-card:hover{border-color:var(--ac)}
+.reset-card b{font-size:15px}
+.reset-card small{color:var(--mut);font-size:12px;line-height:1.4}
+.reset-card.perigo b{color:var(--danger)}
+.reset-card.perigo:hover{border-color:var(--danger)}
+
+.temas{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.tema-card{all:unset;box-sizing:border-box;cursor:pointer;background:radial-gradient(260px 140px at 50% 0%,color-mix(in srgb,var(--ac) 18%,transparent),transparent 70%),var(--bg);color:var(--tx);border:2px solid var(--line);border-radius:10px;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:168px}
+.tema-card:hover{border-color:var(--mut)}
+.tema-card:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.tema-card.on{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 35%,transparent)}
+.tema-card .tp{font-family:var(--fd);font-size:calc(11px * var(--ds));line-height:1.3;text-transform:var(--tt);color:var(--ac);text-shadow:var(--hsh);min-height:2.6em}
+.tema-card .sw{display:flex;gap:5px}
+.tema-card .sw i{width:16px;height:16px;border-radius:var(--avr);border:1px solid var(--line)}
+.tema-card b{font-family:var(--fb);font-size:15px}
+.tema-card small{color:var(--mut);font-family:var(--fb);font-size:12px;line-height:1.4}
+.tema-card .sel{font-size:11px;color:var(--ac);font-family:var(--fb);visibility:hidden}
+.tema-card.on .sel{visibility:visible}
+
+/* ---------- palco ---------- */
+.synth{position:relative;overflow:hidden;isolation:isolate}
+html[data-tema=arcade] .synth::before{content:"";position:absolute;left:-50%;right:-50%;bottom:-6%;height:52%;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(color-mix(in srgb,var(--ac2) 55%,transparent) 2px,transparent 2px),linear-gradient(90deg,color-mix(in srgb,var(--ac2) 55%,transparent) 2px,transparent 2px);
+  background-size:64px 64px;transform:perspective(420px) rotateX(62deg);transform-origin:top;animation:grid 1.6s linear infinite;
+  -webkit-mask-image:linear-gradient(transparent,#000 45%);mask-image:linear-gradient(transparent,#000 45%);opacity:.45}
+@keyframes grid{to{background-position:0 64px}}
+.stage{min-height:calc(100vh - 52px);background:radial-gradient(900px 500px at 50% 0%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 70%),radial-gradient(700px 400px at 50% 100%,color-mix(in srgb,var(--ac2) 16%,transparent),transparent 70%);display:flex;flex-direction:column;align-items:center;padding:48px 16px 32px;text-align:center}
+body.present .stage{min-height:100vh}
+.stage .logo{max-height:72px;max-width:220px;margin-bottom:12px}
+.kicker{font-family:var(--fh);font-size:calc(11px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--ac);text-shadow:0 0 var(--gl) var(--ac)}
+.stage h1{font-family:var(--fd);font-size:calc(clamp(20px,3.8vw,50px) * var(--ds));line-height:1.2;margin:18px 0 10px;font-weight:700;color:var(--ac);text-shadow:var(--hsh);text-transform:var(--tt);text-wrap:balance}
+html[data-tema=arcade] .stage h1{font-weight:400}
+.sub{color:var(--mut);font-size:clamp(15px,1.6vw,20px)}
+.blink{animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+html[data-tema=gala] .blink,html[data-tema=claro] .blink{animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;width:min(1200px,100%);margin-top:40px;perspective:1400px}
+.card{height:300px;cursor:pointer;position:relative}
+.card .in{position:absolute;inset:0;transition:transform .8s cubic-bezier(.3,1.3,.4,1);transform-style:preserve-3d}
+.card.flip .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:var(--rad);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px;overflow:hidden}
+.front{background:linear-gradient(160deg,var(--f1),var(--f2));border:2px solid var(--line);box-shadow:var(--fsh)}
+.front .q{font-family:var(--fd);font-size:min(calc(72px * var(--ds)),118px);line-height:1;color:var(--ac);text-shadow:var(--hsh);animation:bob 1.4s ease-in-out infinite}
+.front .n,.front .ps{font-family:var(--fh);font-size:calc(10px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--mut)}
+.front .ps{color:var(--ac);visibility:hidden}
+.card.next .front{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac),0 0 40px color-mix(in srgb,var(--ac) 40%,transparent)}
+.card.next .ps{visibility:visible;animation:blink 1s steps(2,start) infinite}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.back{transform:rotateY(180deg);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 75%,#000),color-mix(in srgb,var(--c) 18%,#05050a));border:2px solid var(--c);box-shadow:0 0 30px color-mix(in srgb,var(--c) 45%,transparent) inset;color:#fff}
+.back img{width:100%;height:110px;object-fit:cover;border-radius:var(--rad)}
+.back .gn{font-family:var(--fd);font-size:calc(16px * var(--ds));line-height:1.25;font-weight:700;text-transform:var(--tt);text-shadow:0 0 var(--gl) var(--c)}
+.back .gl{font-size:15px;opacity:.92}
+.stage-tools{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;opacity:.35;transition:opacity .2s;z-index:30}
+.stage-tools:hover{opacity:1}
+
+/* busca */
+.searchbox{margin-top:42px;width:min(760px,100%);position:relative}
+.searchbox::before{content:var(--prompt);position:absolute;left:24px;top:50%;transform:translateY(-50%);font-family:var(--fd);font-size:clamp(18px,2.4vw,30px);color:var(--in);text-shadow:0 0 var(--gl) var(--in)}
+.searchbox input{width:100%;font-family:var(--fd);font-size:calc(clamp(14px,2.2vw,26px) * min(var(--ds),1.4));padding:24px 24px 24px var(--inpl);border-radius:var(--rad);background:var(--inbg);border:2px solid var(--line);outline:none;color:var(--in);text-shadow:0 0 calc(var(--gl) / 2) color-mix(in srgb,var(--in) 60%,transparent);text-transform:var(--tt);caret-color:var(--in);box-shadow:var(--fsh)}
+.searchbox input::placeholder{color:color-mix(in srgb,var(--in) 35%,transparent);text-shadow:none}
+.searchbox input:focus{border-color:var(--in);box-shadow:0 0 0 4px color-mix(in srgb,var(--in) 16%,transparent),0 0 40px color-mix(in srgb,var(--in) 18%,transparent)}
+.hint{font-family:var(--fh);font-size:calc(11px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--ac);margin-top:20px}
+.msg{margin-top:24px;font-size:20px;min-height:30px}
+.msg.err{color:var(--danger)}
+.choices{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
+.choices button{font-size:20px;padding:12px 22px;border-radius:var(--rad);background:var(--panel);border:2px solid var(--line);cursor:pointer}
+.choices button:hover,.choices button:focus-visible{border-color:var(--ac);box-shadow:0 0 18px color-mix(in srgb,var(--ac) 35%,transparent)}
+.xp{margin-top:auto;padding-top:40px;width:min(640px,100%);display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center;text-align:left}
+.xp-l{font-family:var(--fh);font-size:calc(9px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--mut);grid-column:1/-1}
+.xp-bar{height:16px;border:2px solid var(--ac);padding:2px;border-radius:var(--rad);box-shadow:0 0 14px color-mix(in srgb,var(--ac) 30%,transparent)}
+.xp-bar i{display:block;height:100%;border-radius:calc(var(--rad) / 2);background:var(--ac);transition:width 1s}
+html[data-tema=arcade] .xp-bar i,html[data-tema=matrix] .xp-bar i{background:repeating-linear-gradient(90deg,var(--ac) 0 10px,transparent 10px 13px)}
+.xp-n{font-family:var(--fh);font-size:calc(12px * var(--hz));color:var(--ac);font-variant-numeric:tabular-nums}
+
+/* painel */
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;width:min(1300px,100%);margin-top:36px;text-align:left}
+.col{background:color-mix(in srgb,var(--panel) 80%,transparent);border:2px solid var(--c);border-radius:var(--rad);overflow:hidden;box-shadow:0 0 26px color-mix(in srgb,var(--c) 25%,transparent)}
+.col h3{margin:0;padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 70%,#000),color-mix(in srgb,var(--c) 30%,transparent));color:#fff;font-family:var(--fd);font-size:calc(14px * var(--ds));line-height:1.3;text-transform:var(--tt);text-shadow:0 0 var(--gl) var(--c)}
+.col .ld{font-size:14px;padding:8px 16px;color:var(--mut)}
+.col .hp{display:flex;align-items:center;gap:10px;padding:0 16px 10px;border-bottom:1px solid var(--line)}
+.col .hp div{flex:1;height:10px;border:1px solid var(--c);padding:1px;border-radius:var(--rad)}
+.col .hp i{display:block;height:100%;background:var(--c);border-radius:var(--rad)}
+.col .hp span{font-family:var(--fh);font-size:calc(9px * var(--hz));color:var(--mut);font-variant-numeric:tabular-nums}
+.col ul{list-style:none;margin:0;padding:8px 16px 16px}
+.col li{padding:8px 0;border-bottom:1px solid color-mix(in srgb,var(--tx) 8%,transparent);display:flex;align-items:center;gap:10px;font-size:16px;animation:up .5s both}
+.col li.pend{opacity:.35}
+
+/* overlays */
+.ov{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+#spot{background:radial-gradient(900px 600px at 50% 40%,color-mix(in srgb,var(--c) var(--mix),transparent),transparent 75%),var(--ov);cursor:pointer}
+#vid{background:#000}
+#vid video{max-width:100%;max-height:100%}
+#vid .skip{position:absolute;right:20px;bottom:20px;color:#fff8;font-size:13px}
+#flash{position:fixed;inset:0;background:var(--ac);pointer-events:none;z-index:240;opacity:0}
+html[data-tema=arcade] #flash,html[data-tema=claro] #flash{background:#fff}
+#flash.go{animation:flash .55s ease-out}
+@keyframes flash{0%{opacity:.85}100%{opacity:0}}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(5px,-2px)}30%,50%,70%{transform:translate(-9px,3px)}40%,60%{transform:translate(9px,-3px)}}
+html[data-tema=gala] .shake,html[data-tema=claro] .shake{animation:none}
+
+#vs{background:radial-gradient(800px 500px at 50% 50%,color-mix(in srgb,var(--c) 18%,transparent),transparent 70%),var(--ov);--c:var(--ac)}
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,4vw,60px);align-items:center;width:min(1200px,100%)}
+.vs-side{display:flex;flex-direction:column;align-items:center;gap:16px}
+.vs-tag{font-family:var(--fh);font-size:calc(12px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--mut)}
+.frame{width:clamp(150px,22vw,280px);aspect-ratio:1;max-width:100%;border:4px solid var(--fc,var(--ac));border-radius:var(--rad);background:var(--panel);box-shadow:var(--fsh),0 0 calc(var(--gl) * 2) var(--fc,var(--ac));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.frame img{width:100%;height:100%;object-fit:cover}
+.frame span{font-family:var(--fd);font-size:calc(clamp(28px,4vw,56px) * min(var(--ds),1.4));color:var(--fc,var(--ac))}
+.vs-name{font-family:var(--fd);font-size:calc(clamp(12px,1.5vw,18px) * var(--ds));line-height:1.4;text-transform:var(--tt)}
+.vs-mid{font-family:var(--fd);font-size:calc(clamp(40px,7vw,96px) * min(var(--ds),1.3));color:var(--ac);text-shadow:var(--hsh);min-width:2.2em}
+.vs-mid.pop{animation:pop .6s cubic-bezier(.3,1.6,.4,1)}
+@keyframes pop{from{transform:scale(2.4);opacity:0}}
+.vs-slot{width:clamp(150px,22vw,280px);aspect-ratio:1;max-width:100%;border:4px solid var(--c);border-radius:var(--rad);box-shadow:var(--fsh),0 0 calc(var(--gl) * 2) var(--c);display:flex;align-items:center;justify-content:center;padding:14px;background:color-mix(in srgb,var(--c) 16%,var(--panel));transition:background .1s,border-color .1s,box-shadow .1s}
+.vs-gc{font-family:var(--fd);font-size:calc(clamp(13px,1.7vw,22px) * var(--ds));line-height:1.3;font-weight:700;color:var(--nm);text-transform:var(--tt);text-shadow:0 0 var(--gl) var(--c);word-break:break-word}
+.vs-lids{min-height:1.4em;font-size:18px;color:var(--mut)}
+#vs.match .vs-mid{color:var(--ok);font-size:calc(clamp(16px,2.4vw,36px) * min(var(--ds),1.3))}
+body:has(#spot:not(.hidden)) .screen,body:has(#vs:not(.hidden)) .screen{opacity:0}
+#vs.match .vs-slot{transform:scale(1.08);transition:transform .3s cubic-bezier(.3,1.6,.4,1)}
+
+.rv{max-width:1100px;display:flex;flex-direction:column;align-items:center}
+.rv>*{animation:up .6s cubic-bezier(.2,.9,.2,1) both}
+.rv>*:nth-child(2){animation-delay:.15s}.rv>*:nth-child(3){animation-delay:.3s}.rv>*:nth-child(4){animation-delay:.45s}
+.rv>*:nth-child(5){animation-delay:.6s}.rv>*:nth-child(6){animation-delay:.75s}.rv>*:nth-child(7){animation-delay:1s}
+@keyframes up{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:none}}
+.rv-badge{font-family:var(--fh);font-size:calc(11px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--btx);background:var(--bbg);border:1px solid var(--bbd);padding:10px 16px;border-radius:var(--rad);box-shadow:var(--bsh)}
+.rv-pair{display:flex;align-items:center;gap:clamp(14px,3vw,40px);margin-top:26px}
+.rv-pair .frame{width:clamp(120px,16vw,220px)}
+.rv-arrow{font-size:clamp(20px,3vw,40px);color:var(--c);text-shadow:0 0 var(--gl) var(--c);animation:nudge .8s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateX(8px)}}
+.rv-k{font-family:var(--fh);font-size:calc(11px * var(--hz));letter-spacing:var(--ls);line-height:1.6;color:color-mix(in srgb,var(--tx) 80%,transparent);margin-top:26px;text-transform:uppercase}
+.rv-nome{font-family:var(--fd);font-weight:700;font-size:calc(clamp(28px,6vw,84px) * var(--ds));line-height:1.08;margin:14px 0 10px;color:var(--nm);text-transform:var(--tt);text-shadow:0 0 var(--gl) var(--c),0 0 calc(var(--gl) * 3) var(--c);text-wrap:balance}
+html[data-tema=arcade] .rv-nome{font-weight:400;text-shadow:0 0 18px var(--c),0 0 48px var(--c),6px 6px 0 color-mix(in srgb,var(--c) 45%,#000)}
+html[data-tema=gala] .rv-nome{font-style:italic;font-weight:600}
+.rv-lema{font-size:clamp(18px,2vw,26px);color:color-mix(in srgb,var(--tx) 88%,transparent);margin:0;max-width:40ch}
+html[data-tema=gala] .rv-lema{font-family:var(--fd);font-style:italic;font-size:clamp(22px,2.4vw,32px)}
+.rv-lt{font-family:var(--fh);font-size:calc(10px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--mut);margin:24px 0 12px}
+.rv-lids{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+.lid{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:clamp(16px,1.8vw,22px)}
+.av{width:84px;height:84px;border-radius:var(--avr);object-fit:cover;border:3px solid var(--c,var(--ac));box-shadow:0 0 var(--gl) var(--c,var(--ac));background:color-mix(in srgb,var(--c,var(--ac)) 50%,#000);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:calc(20px * min(var(--ds),1.4));color:#fff;flex:none}
+.av.sm{width:38px;height:38px;font-size:12px;border-width:2px;box-shadow:none}
+.rv-hint{margin-top:30px;font-family:var(--fh);font-size:calc(10px * var(--hz));letter-spacing:var(--ls);text-transform:uppercase;color:var(--ac)}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+.empty{color:var(--mut);margin-top:40px}
+@media (max-width:700px){
+  nav .keys{display:none} nav{overflow-x:auto}
+  .vs-wrap{grid-template-columns:1fr;gap:14px}
+  .rv-pair .frame{width:110px}
+}
+@media (prefers-reduced-motion:reduce){
+  html[data-tema=arcade] .synth::before,.front .q,.rv-arrow,.blink,.card.next .ps{animation:none}
+  .shake,#flash.go{animation:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+<nav>
+  <span class="brand">Revelação GC</span>
+  <button data-go="admin">1 · Admin</button>
+  <button data-go="revela">2 · Revelar GCs</button>
+  <button data-go="busca">3 · Qual seu GC?</button>
+  <button data-go="painel">4 · Painel</button>
+  <span class="keys">T troca tema · F tela cheia · H esconde menu · Espaço revela próximo · Alt+1..4 troca de tela</span>
+</nav>
+
+<section id="admin" class="screen"><div class="adm" id="admBody"></div></section>
+<section id="revela" class="screen"></section>
+<section id="busca" class="screen"></section>
+<section id="painel" class="screen"></section>
+
+<div id="vid" class="ov hidden"><video playsinline></video><span class="skip">clique ou Enter para pular</span></div>
+<div id="vs" class="ov synth hidden">
+  <div class="vs-wrap">
+    <div class="vs-side"><div class="vs-tag" id="vsT1"></div><div class="frame" id="vsPhoto"></div><div class="vs-name" id="vsName"></div></div>
+    <div class="vs-mid" id="vsMid"></div>
+    <div class="vs-side"><div class="vs-tag" id="vsT2"></div><div class="vs-slot"><div class="vs-gc" id="vsGc">???</div></div><div class="vs-lids" id="vsLids"></div></div>
+  </div>
+</div>
+<div id="spot" class="ov synth hidden"></div>
+<div id="ask" class="ov hidden" style="background:rgba(0,0,0,.65)"><div class="box" style="max-width:440px;text-align:left"><p id="askMsg" style="margin:0 0 16px;font-size:16px"></p><div class="row" style="justify-content:flex-end"><button class="btn" id="askNo">Cancelar</button><button class="btn pri" id="askOk">Confirmar</button></div></div></div>
+<div id="flash"></div>
+<canvas id="confetti"></canvas>
+<div class="savestate hidden" id="saveState">Salvo</div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= temas ================= */
+const TEMAS = {
+  matrix: {
+    nome: 'Matrix', desc: 'Chuva de código verde e o destino sendo decodificado letra por letra.',
+    fx: 'rain', mono: '#39ff7a', decode: true, pixel: false, wave: 'sine', tick: 1400,
+    charset: 'アイウエオカキクケコサシスセソタチツテトナニヌネ0123456789',
+    confete: ['#39ff7a', '#00b347', '#c9ffd9', '#eafff0'], amostra: ['#020703', '#39ff7a', '#00b347', '#c9ffd9'],
+    txt: { revela: 'Novos GCs', start: '> executar_', badgeGc: 'Acesso concedido', badgeCasal: 'Destino decodificado', hint: '> aguardando entrada_',
+      ph: 'nome_do_casal', p1: 'Usuário', p2: 'Destino', mid: '>>', match: 'Decodificado', painel: 'Rede de GCs', prog: 'Casais sincronizados', fechar: 'Enter para continuar', seta: '→' },
+  },
+  tech: {
+    nome: 'Tecnologia', desc: 'Holograma azul, rede de partículas conectadas e análise do destino.',
+    fx: 'plexus', mono: null, decode: true, pixel: false, wave: 'triangle', tick: 1100,
+    charset: '01<>/\\{}[]#$%&ABCDEF',
+    confete: ['#3cc8ff', '#7b5cff', '#4dffd2', '#ffffff'], amostra: ['#040814', '#3cc8ff', '#7b5cff', '#4dffd2'],
+    txt: { revela: 'Novos GCs', start: 'Iniciar', badgeGc: 'Novo GC identificado', badgeCasal: 'Análise concluída', hint: 'Digite o nome e pressione Enter',
+      ph: 'nome do casal', p1: 'Perfil', p2: 'Destino', mid: '→', match: 'Confirmado', painel: 'Painel dos GCs', prog: 'Progresso da multiplicação', fechar: 'Enter para continuar', seta: '→' },
+  },
+  arcade: {
+    nome: 'Arcade', desc: 'Fliperama neon com tela VS, contagem e efeitos 8-bit.',
+    fx: null, mono: null, decode: false, pixel: true, wave: 'square', tick: 660,
+    confete: ['#FFE14D', '#ff2bd6', '#22e1ff', '#ffffff'], amostra: ['#07051a', '#FFE14D', '#ff2bd6', '#3dff9a'],
+    txt: { revela: 'Novos GCs', start: 'Press start', badgeGc: 'Novo GC desbloqueado!', badgeCasal: 'Destino desbloqueado!', hint: 'Insert coin · aperte Enter',
+      ph: 'nome do casal', p1: 'Player', p2: 'Destino', mid: 'VS', match: 'Match!', painel: 'Placar dos GCs', prog: 'Progresso da multiplicação', fechar: 'Pressione Enter ▶', seta: '▶' },
+  },
+  gala: {
+    nome: 'Gala', desc: 'Preto e dourado, brilhos subindo e tipografia clássica.',
+    fx: 'sparkle', mono: '#e2b866', decode: false, pixel: false, wave: 'sine', tick: 1900,
+    confete: ['#e2b866', '#f6efe3', '#c9973f', '#fff3d6'], amostra: ['#0c0a08', '#e2b866', '#9c6b2f', '#f6efe3'],
+    txt: { revela: 'Os novos GCs', start: 'Revelar', badgeGc: 'Apresentamos', badgeCasal: 'Com alegria anunciamos', hint: 'Digite o nome de vocês e pressione Enter',
+      ph: 'Nome do casal', p1: 'O casal', p2: 'Destino', mid: '&', match: 'Revelado', painel: 'Nossas novas famílias', prog: 'Casais que já descobriram seu GC', fechar: 'Enter para continuar', seta: '→' },
+  },
+  claro: {
+    nome: 'Claro', desc: 'Fundo claro e limpo. Melhor para projetor em salão iluminado.',
+    fx: null, mono: null, decode: false, pixel: false, wave: 'sine', tick: 1200,
+    confete: ['#2f54eb', '#ff6b4a', '#11804c', '#f5b700', '#8f5cff'], amostra: ['#f3f5fa', '#2f54eb', '#ff6b4a', '#131a2c'],
+    txt: { revela: 'Os novos GCs', start: 'Revelar', badgeGc: 'Novo GC', badgeCasal: 'Destino revelado', hint: 'Digite o nome de vocês e pressione Enter',
+      ph: 'Nome do casal', p1: 'Casal', p2: 'Destino', mid: '→', match: 'Revelado!', painel: 'Nossas novas famílias', prog: 'Casais que já descobriram seu GC', fechar: 'Enter para continuar', seta: '→' },
+  },
+};
+Object.keys(TEMAS).forEach(k => TEMAS[k].id = k);
+const T = () => TEMAS[S?.evento?.tema] || TEMAS.matrix;
+const col = g => T().mono || g.cor;
+
+/* ================= banco (IndexedDB, com fallback em memória) ================= */
+const DB = { db: null, mem: { kv: {}, midia: {} } };
+function openDB() {
+  return new Promise(res => {
+    try {
+      const r = indexedDB.open('revelacao_gc', 1);
+      r.onupgradeneeded = () => { r.result.createObjectStore('kv'); r.result.createObjectStore('midia'); };
+      r.onsuccess = () => { DB.db = r.result; res(); };
+      r.onerror = () => res();
+    } catch (e) { res(); }
+  });
+}
+function req(store, mode, make) {
+  if (!DB.db) return Promise.resolve(make(null, DB.mem[store]));
+  return new Promise((res, rej) => {
+    const tx = DB.db.transaction(store, mode);
+    const r = make(tx.objectStore(store));
+    let out; if (r) r.onsuccess = () => out = r.result;
+    tx.oncomplete = () => res(out); tx.onerror = () => rej(tx.error);
+  });
+}
+const kvGet = k => req('kv', 'readonly', (s, m) => s ? s.get(k) : m[k]);
+const kvPut = (k, v) => req('kv', 'readwrite', (s, m) => s ? s.put(v, k) : void (m[k] = v));
+const mPut = (k, v) => req('midia', 'readwrite', (s, m) => s ? s.put(v, k) : void (m[k] = v));
+const mDel = k => req('midia', 'readwrite', (s, m) => s ? s.delete(k) : void delete m[k]);
+async function mAll() {
+  if (!DB.db) return Object.entries(DB.mem.midia);
+  const keys = await req('midia', 'readonly', s => s.getAllKeys());
+  const vals = await req('midia', 'readonly', s => s.getAll());
+  return keys.map((k, i) => [k, vals[i]]);
+}
+
+const URLS = {}, TYPES = {};
+async function loadMedia() {
+  for (const k in URLS) URL.revokeObjectURL(URLS[k]);
+  for (const k in URLS) delete URLS[k];
+  for (const [k, v] of await mAll()) { URLS[k] = URL.createObjectURL(v.blob); TYPES[k] = v.type; }
+}
+async function dropMedia(id) {
+  if (!id) return;
+  await mDel(id);
+  if (URLS[id]) URL.revokeObjectURL(URLS[id]);
+  delete URLS[id]; delete TYPES[id];
+}
+async function storeMedia(file) {
+  const id = uid('m');
+  await mPut(id, { blob: file, type: file.type, nome: file.name });
+  URLS[id] = URL.createObjectURL(file); TYPES[id] = file.type;
+  return id;
+}
+
+/* ================= estado ================= */
+function demo() {
+  const g = (id, nome, cor, lema, lids) => ({ id, nome, cor, lema, fotoId: null, videoId: null, lideres: lids.map(n => ({ nome: n, fotoId: null })) });
+  const gcs = [
+    g('g1', 'GC Raízes', '#FF4D6D', 'Arraigados e alicerçados em amor — Ef 3:17', ['Pedro e Ana Souza']),
+    g('g2', 'GC Farol', '#22B8E8', 'Vós sois a luz do mundo — Mt 5:14', ['João e Marta Lima']),
+    g('g3', 'GC Videira', '#2FBF71', 'Eu sou a videira, vós os ramos — Jo 15:5', ['Lucas e Bia Rocha']),
+    g('g4', 'GC Âncora', '#9B5CFF', 'Esperança como âncora da alma — Hb 6:19', ['Tiago e Clara Melo']),
+  ];
+  const cs = [['Casal Calana', 'Kaio e Lana', 'g1'], ['Casal Oliveira', 'Rafa e Júlia', 'g2'], ['Casal Santos', 'Marcos e Lia', 'g3'],
+    ['Casal Ferreira', 'Davi e Sara', 'g4'], ['Casal Almeida', 'Bruno e Carol', 'g1'], ['Casal Costa', 'Felipe e Nina', 'g2'],
+    ['Casal Ribeiro', 'André e Paula', 'g3'], ['Casal Carvalho', 'Thiago e Bel', 'g4'], ['Casal Gomes', 'Igor e Duda', 'g1'],
+    ['Casal Martins', 'Leo e Rute', 'g2'], ['Casal Araújo', 'Gabriel e Ester', 'g3'], ['Casal Barbosa', 'Caio e Lívia', 'g4']];
+  return {
+    evento: { nome: 'Multiplicação 2026', subtitulo: 'Um novo tempo, novas casas, a mesma família', logoId: null, tema: 'matrix', som: true, suspense: 3.5 },
+    gcs,
+    casais: cs.map(([nome, apelidos, gcId], i) => ({ id: 'c' + (i + 1), nome, apelidos, gcId, fotoId: null })),
+    revelados: {},
+    gcsRevelados: [],
+  };
+}
+let S = null;
+function fix(s) {
+  const d = demo();
+  s.evento = Object.assign({}, d.evento, s.evento || {});
+  if (!TEMAS[s.evento.tema]) s.evento.tema = 'matrix';
+  s.gcs = s.gcs || []; s.casais = s.casais || []; s.revelados = s.revelados || {}; s.gcsRevelados = s.gcsRevelados || [];
+  s.gcs.forEach(g => g.lideres = g.lideres || []);
+  return s;
+}
+let saveT;
+function toast(txt, ms = 1500) {
+  const el = $('#saveState'); el.textContent = txt; el.classList.remove('hidden');
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.add('hidden'), ms);
+}
+function save() {
+  clearTimeout(saveT);
+  saveT = setTimeout(async () => {
+    await kvPut('config', JSON.parse(JSON.stringify(S)));
+    if (screen === 'admin') toast(DB.db ? 'Salvo no banco local' : 'Salvo só na memória (navegador bloqueou IndexedDB)');
+  }, 250);
+}
+function setPath(path, val) {
+  const ks = path.split('.'); let o = S;
+  for (let i = 0; i < ks.length - 1; i++) o = o[ks[i]];
+  o[ks[ks.length - 1]] = val;
+}
+function getPath(path) { return path.split('.').reduce((o, k) => o?.[k], S); }
+const gcById = id => S.gcs.find(g => g.id === id);
+function applyTheme() {
+  document.documentElement.dataset.tema = S.evento.tema;
+  fxStart();
+}
+
+/* ================= utilidades visuais ================= */
+function initials(n) {
+  return (n || '?').split(/\s+/).filter(w => w.length > 2 && !/^(casal|familia|família|gc)$/i.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+}
+function avatar(p, cls = '') {
+  return p.fotoId && URLS[p.fotoId] ? `<img class="av ${cls}" src="${URLS[p.fotoId]}" alt="">` : `<div class="av ${cls}">${esc(initials(p.nome))}</div>`;
+}
+function frameInner(p) { return p.fotoId && URLS[p.fotoId] ? `<img src="${URLS[p.fotoId]}" alt="">` : `<span>${esc(initials(p.nome))}</span>`; }
+function logoHTML() { const u = URLS[S.evento.logoId]; return u ? `<img class="logo" src="${u}" alt="">` : ''; }
+function restartAnim(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+const flash = () => restartAnim($('#flash'), 'go');
+const shake = el => restartAnim(el, 'shake');
+const scramble = (str, keep, cs) => [...str].map((ch, i) => i < keep || ch === ' ' ? ch : cs[Math.random() * cs.length | 0]).join('');
+async function decodeTo(el, final, ms, som = true) {
+  const cs = T().charset || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', steps = Math.max(10, ms / 45 | 0);
+  for (let s = 0; s <= steps; s++) {
+    el.textContent = scramble(final, Math.floor(final.length * s / steps), cs);
+    if (som && s % 2 === 0) sfx.tick();
+    await sleep(ms / steps);
+  }
+  el.textContent = final;
+}
+
+/* fundo animado por tema */
+const fx = $('#fx'), fc = fx.getContext('2d'); let fxRaf = 0;
+const FX = {
+  rain() {
+    const sz = 16, cols = Math.ceil(fx.width / sz), drops = Array.from({ length: cols }, () => Math.random() * -60), cs = TEMAS.matrix.charset;
+    let f = 0;
+    fc.fillStyle = '#020703'; fc.fillRect(0, 0, fx.width, fx.height);
+    return () => {
+      if (++f % 3) return;
+      fc.fillStyle = 'rgba(2,7,3,.14)'; fc.fillRect(0, 0, fx.width, fx.height);
+      fc.font = `${sz}px "Share Tech Mono", monospace`;
+      for (let i = 0; i < cols; i++) {
+        const y = drops[i] * sz;
+        fc.fillStyle = Math.random() < .04 ? '#e6ffee' : '#39ff7a';
+        fc.fillText(cs[Math.random() * cs.length | 0], i * sz, y);
+        if (y > fx.height && Math.random() > .975) drops[i] = 0;
+        drops[i]++;
+      }
+    };
+  },
+  plexus() {
+    const n = Math.min(90, (fx.width * fx.height) / 16000 | 0);
+    const ps = Array.from({ length: n }, () => ({ x: Math.random() * fx.width, y: Math.random() * fx.height, vx: (Math.random() - .5) * .5, vy: (Math.random() - .5) * .5 }));
+    return () => {
+      fc.clearRect(0, 0, fx.width, fx.height);
+      for (const p of ps) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > fx.width) p.vx *= -1;
+        if (p.y < 0 || p.y > fx.height) p.vy *= -1;
+      }
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+        const a = ps[i], b = ps[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 140) { fc.strokeStyle = `rgba(60,200,255,${(1 - d / 140) * .45})`; fc.lineWidth = 1; fc.beginPath(); fc.moveTo(a.x, a.y); fc.lineTo(b.x, b.y); fc.stroke(); }
+      }
+      fc.fillStyle = '#7fdcff';
+      for (const p of ps) { fc.beginPath(); fc.arc(p.x, p.y, 1.8, 0, 7); fc.fill(); }
+    };
+  },
+  sparkle() {
+    const n = 70, mk = () => ({ x: Math.random() * fx.width, y: fx.height + Math.random() * fx.height, r: .6 + Math.random() * 2.2, v: .2 + Math.random() * .6, t: Math.random() * 6 });
+    const ps = Array.from({ length: n }, () => { const p = mk(); p.y = Math.random() * fx.height; return p; });
+    return () => {
+      fc.clearRect(0, 0, fx.width, fx.height);
+      for (const p of ps) {
+        p.y -= p.v; p.t += .03; p.x += Math.sin(p.t) * .2;
+        if (p.y < -10) Object.assign(p, mk());
+        const a = .35 + Math.sin(p.t * 2) * .3;
+        const g = fc.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        g.addColorStop(0, `rgba(255,228,160,${a})`); g.addColorStop(1, 'rgba(226,184,102,0)');
+        fc.fillStyle = g; fc.beginPath(); fc.arc(p.x, p.y, p.r * 4, 0, 7); fc.fill();
+      }
+    };
+  },
+};
+function fxStart() {
+  cancelAnimationFrame(fxRaf); fxRaf = 0;
+  fx.width = innerWidth; fx.height = innerHeight;
+  fc.clearRect(0, 0, fx.width, fx.height);
+  const kind = T().fx;
+  if (!kind || !document.body.classList.contains('palco')) return;
+  const step = FX[kind]();
+  if (reduz) { for (let i = 0; i < 120; i++) step(); return; }
+  const run = () => { step(); fxRaf = requestAnimationFrame(run); };
+  run();
+}
+
+/* confete */
+const cv = $('#confetti'), cx = cv.getContext('2d'); let parts = [], raf = 0;
+function sizeCanvas() { const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+function confetti(extra) {
+  sizeCanvas();
+  const colors = [extra, ...T().confete], px = T().pixel;
+  for (let i = 0; i < 240; i++) {
+    const a = Math.random() * Math.PI * 2, v = 6 + Math.random() * 14;
+    parts.push({ x: innerWidth / 2, y: innerHeight * .45, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 6, s: 5 + Math.random() * 7, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: colors[i % colors.length], px });
+  }
+  if (!raf) loop();
+}
+function loop() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  for (const p of parts) {
+    p.vy += .35; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.fillStyle = p.c;
+    if (p.px) cx.fillRect(Math.round(p.x / 4) * 4, Math.round(p.y / 4) * 4, p.s, p.s);
+    else { cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); cx.restore(); }
+  }
+  parts = parts.filter(p => p.y < innerHeight + 40);
+  raf = parts.length ? requestAnimationFrame(loop) : 0;
+  if (!raf) cx.clearRect(0, 0, innerWidth, innerHeight);
+}
+
+/* som sintetizado, timbre conforme o tema */
+let AC;
+function ac() { if (!S.evento.som) return null; try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume?.(); } catch (e) { return null; } return AC; }
+function blip(freq, dur, at = 0, type = T().wave, vol = .08, slide) {
+  const a = ac(); if (!a) return;
+  const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + at;
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+  g.gain.setValueAtTime(type === 'square' ? vol : vol * 1.8, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .02);
+}
+const sfx = {
+  tick: () => blip(T().tick + Math.random() * 200, .035, 0, T().wave, .04),
+  coin: () => { blip(988, .08); blip(1319, .35, .08); },
+  beep: () => blip(T().id === 'gala' ? 523 : 440, .2),
+  go: () => blip(880, .35, 0, T().wave, .09),
+  flip: () => blip(220, .25, 0, 'triangle', .15, 880),
+  erro: () => blip(140, .3, 0, 'sawtooth', .05),
+  fanfare: () => {
+    if (T().id === 'gala') { [784, 988, 1175, 1568].forEach((f, i) => blip(f, 2.2, i * .12, 'sine', .05)); return; }
+    [523, 659, 784, 1047, 784, 1047].forEach((f, i) => blip(f, .14, i * .09));
+    [523, 659, 784].forEach(f => blip(f, 1.2, .56, T().wave, .05));
+  },
+};
+
+/* overlays */
+function ask(msg, soOk) {
+  return new Promise(res => {
+    const el = $('#ask'); $('#askMsg').textContent = msg; $('#askNo').classList.toggle('hidden', !!soOk);
+    el.classList.remove('hidden'); $('#askOk').focus();
+    const done = v => { el.classList.add('hidden'); res(v); };
+    $('#askOk').onclick = () => done(true); $('#askNo').onclick = () => done(false);
+  });
+}
+let spotClose = null, vidDone = null, busy = false;
+function showSpot(html, color, onClose) {
+  const el = $('#spot'); el.style.setProperty('--c', color); el.innerHTML = html; el.classList.remove('hidden');
+  spotClose = onClose || null;
+  const nm = $('.rv-nome', el);
+  if (T().decode && nm && !reduz) decodeTo(nm, nm.textContent, 700, false);
+}
+function closeSpot() { $('#spot').classList.add('hidden'); const f = spotClose; spotClose = null; f && f(); }
+function playVideo(id) {
+  return new Promise(res => {
+    const box = $('#vid'), v = $('video', box);
+    v.src = URLS[id]; box.classList.remove('hidden');
+    vidDone = () => { v.pause(); v.removeAttribute('src'); v.load(); box.classList.add('hidden'); vidDone = null; res(); };
+    v.onended = vidDone;
+    v.play().catch(() => {});
+  });
+}
+$('#spot').onclick = closeSpot;
+$('#vid').onclick = () => vidDone && vidDone();
+
+function revealHTML(gc, casal) {
+  const x = T().txt;
+  const gcFrame = gc.fotoId && URLS[gc.fotoId] ? `<img src="${URLS[gc.fotoId]}" alt="">` : `<span>${esc(initials(gc.nome))}</span>`;
+  const topo = casal
+    ? `<div class="rv-badge">${esc(x.badgeCasal)}</div>
+       <div class="rv-pair"><div class="frame" style="--fc:var(--tx)">${frameInner(casal)}</div><div class="rv-arrow">${x.seta}</div><div class="frame" style="--fc:var(--c)">${gcFrame}</div></div>
+       <div class="rv-k">${esc(casal.nome)}, vocês vão para o</div>`
+    : `<div class="rv-badge">${esc(x.badgeGc)}</div>
+       ${gc.fotoId && URLS[gc.fotoId] ? `<div class="rv-pair"><div class="frame" style="--fc:var(--c);width:clamp(160px,22vw,300px)">${gcFrame}</div></div>` : '<div></div>'}
+       <div class="rv-k">${esc(S.evento.nome)}</div>`;
+  return `<div class="rv">${topo}<h1 class="rv-nome">${esc(gc.nome)}</h1>
+    ${gc.lema ? `<p class="rv-lema">“${esc(gc.lema)}”</p>` : '<div></div>'}
+    <div><div class="rv-lt">Liderança</div>
+    <div class="rv-lids">${gc.lideres.map(l => `<div class="lid">${avatar(l)}<span>${esc(l.nome)}</span></div>`).join('') || '<span class="sub">—</span>'}</div></div>
+    <div class="rv-hint blink">${esc(x.fechar)}</div></div>`;
+}
+
+/* ================= navegação ================= */
+let screen = 'admin';
+function go(name) {
+  screen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== name));
+  document.querySelectorAll('nav [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === name));
+  const palco = name !== 'admin', mudou = document.body.classList.contains('palco') !== palco;
+  document.body.classList.toggle('palco', palco);
+  if (mudou) fxStart();
+  try { history.replaceState(null, '', '#' + name); } catch (e) {}
+  ({ admin: renderAdmin, revela: renderRevela, busca: renderBusca, painel: renderPainel })[name]();
+}
+document.querySelectorAll('nav [data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+function setTema(k) {
+  S.evento.tema = k; applyTheme(); save();
+  if (screen !== 'admin') toast('Tema: ' + T().nome);
+  go(screen);
+}
+
+/* ================= ADMIN ================= */
+let loteMsg = '';
+function mediaField(path, id, accept, label) {
+  const u = id && URLS[id];
+  const prev = u ? (TYPES[id]?.startsWith('video') ? `<video src="${u}" muted></video>` : `<img src="${u}" alt="">`) : `<span class="ph">${label}</span>`;
+  return `<div class="mf">${prev}<label class="btn sm">${id ? 'Trocar' : 'Enviar'}<input type="file" accept="${accept}" data-media="${path}" hidden></label>${id ? `<button class="btn sm ghost danger" data-act="rmMedia" data-path="${path}" title="Remover">✕</button>` : ''}</div>`;
+}
+function renderAdmin() {
+  const e = S.evento;
+  const opts = sel => S.gcs.map(g => `<option value="${g.id}" ${g.id === sel ? 'selected' : ''}>${esc(g.nome)}</option>`).join('');
+  const nRev = Object.keys(S.revelados).length, nFoto = S.casais.filter(c => c.fotoId).length;
+  $('#admBody').innerHTML = `
+  <h2>Tema da apresentação</h2>
+  <div class="temas">
+    ${Object.entries(TEMAS).map(([k, t]) => `
+    <button class="tema-card ${e.tema === k ? 'on' : ''}" data-tema="${k}" data-act="tema" data-v="${k}">
+      <div class="tp">Qual é o seu GC?</div>
+      <div class="sw">${t.amostra.map(c => `<i style="background:${c}"></i>`).join('')}</div>
+      <b>${esc(t.nome)}</b><small>${esc(t.desc)}${t.mono ? ' Todos os GCs usam a cor do tema.' : ''}</small>
+      <span class="sel">● Em uso</span>
+    </button>`).join('')}
+  </div>
+  <p class="note">Dica: no palco, a tecla T troca de tema na hora.</p>
+
+  <h2>Evento</h2>
+  <div class="box">
+    <div class="row">
+      <div class="grow"><label for="ev-nome">Nome do evento</label><input id="ev-nome" data-path="evento.nome" value="${esc(e.nome)}"></div>
+      <div class="grow"><label for="ev-sub">Subtítulo</label><input id="ev-sub" data-path="evento.subtitulo" value="${esc(e.subtitulo)}"></div>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <div><label>Logo</label>${mediaField('evento.logoId', e.logoId, 'image/*', 'Sem logo')}</div>
+      <div><label for="ev-sus">Suspense (segundos)</label><input id="ev-sus" type="number" min="1" max="15" step="0.5" data-path="evento.suspense" data-num value="${e.suspense}" style="width:100px"></div>
+      <div><label>Som</label><label style="color:var(--tx)"><input type="checkbox" data-path="evento.som" ${e.som ? 'checked' : ''}> efeitos sonoros</label></div>
+    </div>
+  </div>
+
+  <h2>GCs (${S.gcs.length})</h2>
+  <div class="grid2">
+    ${S.gcs.map((g, i) => `
+    <div class="box gc-ed" style="--c:${esc(g.cor)}">
+      <div class="row">
+        <input type="color" data-path="gcs.${i}.cor" value="${esc(g.cor)}">
+        <input class="grow" data-path="gcs.${i}.nome" value="${esc(g.nome)}" placeholder="Nome do GC">
+        ${S.gcsRevelados.includes(g.id) ? `<button class="btn sm ghost" data-desfazer="gc" data-id="${g.id}">Desfazer revelação</button>` : ''}
+        <button class="btn sm ghost danger" data-act="delGc" data-i="${i}">Remover</button>
+      </div>
+      <label>Lema / versículo</label><input data-path="gcs.${i}.lema" value="${esc(g.lema)}">
+      <div class="row" style="margin-top:4px">
+        <div><label>Foto do GC</label>${mediaField(`gcs.${i}.fotoId`, g.fotoId, 'image/*', 'Sem foto')}</div>
+        <div><label>Vídeo antes da revelação</label>${mediaField(`gcs.${i}.videoId`, g.videoId, 'video/*', 'Sem vídeo')}</div>
+      </div>
+      <label>Líderes</label>
+      ${g.lideres.map((l, j) => `<div class="row lid-ed">${mediaField(`gcs.${i}.lideres.${j}.fotoId`, l.fotoId, 'image/*', 'Foto')}
+        <input class="grow" data-path="gcs.${i}.lideres.${j}.nome" value="${esc(l.nome)}" placeholder="Ex.: Pedro e Ana">
+        <button class="btn sm ghost danger" data-act="delLid" data-i="${i}" data-j="${j}">✕</button></div>`).join('')}
+      <div style="margin-top:10px"><button class="btn sm" data-act="addLid" data-i="${i}">+ Líder</button></div>
+    </div>`).join('')}
+  </div>
+  <div style="margin-top:12px"><button class="btn" data-act="addGc">+ Novo GC</button></div>
+
+  <h2>Casais (${S.casais.length})</h2>
+  <div class="box">
+    <div class="row" style="margin-bottom:12px">
+      <span class="tag ok">${nRev} revelados</span><span class="tag">${nFoto} com foto</span>
+      <label class="btn pri sm" style="margin-left:auto">Enviar fotos em lote<input type="file" accept="image/*" multiple id="lote" hidden></label>
+    </div>
+    <p class="note" style="margin:0 0 10px">Fotos em lote: dê a cada arquivo o nome do casal (ex.: <code>calana.jpg</code>, <code>casal oliveira.png</code>) e a foto vai para o casal certo.</p>
+    ${loteMsg ? `<p class="note" style="color:var(--ok);margin:0 0 10px">${esc(loteMsg)}</p>` : ''}
+    <div class="tbl-wrap"><table class="tbl">
+      <tr><th>Foto</th><th>Nome</th><th>Apelidos / outras formas de digitar</th><th>GC de destino</th><th>Status</th><th></th></tr>
+      ${S.casais.map((c, i) => `<tr>
+        <td>${mediaField(`casais.${i}.fotoId`, c.fotoId, 'image/*', 'Foto')}</td>
+        <td style="min-width:170px"><input data-path="casais.${i}.nome" value="${esc(c.nome)}"></td>
+        <td style="min-width:200px"><input data-path="casais.${i}.apelidos" value="${esc(c.apelidos)}" placeholder="separe por vírgula"></td>
+        <td style="min-width:150px"><select data-path="casais.${i}.gcId"><option value="">—</option>${opts(c.gcId)}</select></td>
+        <td>${S.revelados[c.id] ? `<span class="tag ok">revelado</span> <button class="btn sm ghost" data-desfazer="casal" data-id="${c.id}">Desfazer</button>` : '<span class="tag">aguardando</span>'}</td>
+        <td><button class="btn sm ghost danger" data-act="delCasal" data-i="${i}">✕</button></td></tr>`).join('')}
+    </table></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn" data-act="addCasal">+ Casal</button>
+    </div>
+  </div>
+
+  <h2>Importar lista</h2>
+  <div class="box">
+    <p class="note" style="margin-top:0">Uma linha por casal: <code>Nome do casal;Nome do GC;apelidos</code>. GCs que não existirem são criados. Dá para colar direto do Excel (separado por tab).</p>
+    <textarea id="csv" placeholder="Casal Calana;GC Raízes;Kaio e Lana"></textarea>
+    <div class="row" style="margin-top:10px"><button class="btn pri" data-act="importCsv">Importar casais</button><span class="note" id="csvMsg"></span></div>
+  </div>
+
+  <h2>Reiniciar</h2>
+  ${blocoReiniciar()}
+
+  <h2>Backup</h2>
+  <div class="box row">
+    <button class="btn" data-act="export">Exportar evento (.json com mídias)</button>
+    <label class="btn">Importar evento<input type="file" accept=".json,application/json" id="impFile" hidden></label>
+    <span class="note">${DB.db ? 'Dados e mídias ficam salvos no banco local deste navegador (IndexedDB).' : 'Atenção: este navegador bloqueou o banco local; os dados somem ao recarregar. Abra no Chrome ou Edge.'}</span>
+  </div>`;
+}
+
+const admBody = $('#admBody');
+admBody.addEventListener('input', e => {
+  const t = e.target, p = t.dataset.path; if (!p) return;
+  let v = t.type === 'checkbox' ? t.checked : t.value;
+  if (t.hasAttribute('data-num')) v = parseFloat(v) || 1;
+  setPath(p, v);
+  if (/^gcs\.\d+\.cor$/.test(p)) t.closest('.gc-ed').style.setProperty('--c', v);
+  save();
+});
+admBody.addEventListener('change', async e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' && t.dataset.path) { setPath(t.dataset.path, t.value); save(); return; }
+  if (t.dataset.media && t.files[0]) {
+    const id = await storeMedia(t.files[0]);
+    await dropMedia(getPath(t.dataset.media));
+    setPath(t.dataset.media, id); save(); renderAdmin();
+  }
+  if (t.id === 'lote' && t.files.length) fotosLote([...t.files]);
+  if (t.id === 'impFile' && t.files[0]) importJSON(t.files[0]);
+});
+admBody.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const i = +b.dataset.i, j = +b.dataset.j;
+  switch (b.dataset.act) {
+    case 'tema': setTema(b.dataset.v); return;
+    case 'rmMedia': await dropMedia(getPath(b.dataset.path)); setPath(b.dataset.path, null); break;
+    case 'addGc': S.gcs.push({ id: uid('g'), nome: 'Novo GC', cor: '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0'), lema: '', fotoId: null, videoId: null, lideres: [{ nome: '', fotoId: null }] }); break;
+    case 'delGc': {
+      const g = S.gcs[i];
+      if (!await ask(`Remover ${g.nome}? Os casais deste GC ficarão sem destino.`)) return;
+      for (const id of [g.fotoId, g.videoId, ...g.lideres.map(l => l.fotoId)]) await dropMedia(id);
+      S.casais.forEach(c => { if (c.gcId === g.id) c.gcId = ''; });
+      S.gcs.splice(i, 1); break;
+    }
+    case 'addLid': S.gcs[i].lideres.push({ nome: '', fotoId: null }); break;
+    case 'delLid': await dropMedia(S.gcs[i].lideres[j].fotoId); S.gcs[i].lideres.splice(j, 1); break;
+    case 'addCasal': S.casais.push({ id: uid('c'), nome: 'Casal ', apelidos: '', gcId: S.gcs[0]?.id || '', fotoId: null }); break;
+    case 'delCasal': await dropMedia(S.casais[i].fotoId); delete S.revelados[S.casais[i].id]; S.casais.splice(i, 1); break;
+    case 'importCsv': importCsv(); return;
+    case 'export': exportJSON(); return;
+  }
+  save(); renderAdmin();
+});
+
+async function fotosLote(files) {
+  let ok = 0; const sem = [];
+  for (const f of files) {
+    const q = norm(f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' '));
+    const best = S.casais.map(c => ({ c, s: score(q, c) })).sort((a, b) => b.s - a.s)[0];
+    if (!best || best.s < .8) { sem.push(f.name); continue; }
+    const id = await storeMedia(f);
+    await dropMedia(best.c.fotoId);
+    best.c.fotoId = id; ok++;
+  }
+  loteMsg = `${ok} foto(s) associada(s).` + (sem.length ? ` Sem casal correspondente: ${sem.join(', ')}.` : '');
+  save(); renderAdmin();
+}
+function importCsv() {
+  const lines = $('#csv').value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  let n = 0, novos = 0;
+  for (const l of lines) {
+    const [nome, gcNome = '', apelidos = ''] = l.split(/;|\t/).map(s => s.trim());
+    if (!nome) continue;
+    let gc = gcNome ? S.gcs.find(g => norm(g.nome) === norm(gcNome)) : null;
+    if (gcNome && !gc) {
+      gc = { id: uid('g'), nome: gcNome, cor: hslToHex(`hsl(${Math.random() * 360 | 0} 75% 55%)`), lema: '', fotoId: null, videoId: null, lideres: [] };
+      S.gcs.push(gc); novos++;
+    }
+    const ex = S.casais.find(c => norm(c.nome) === norm(nome));
+    if (ex) { ex.gcId = gc?.id || ex.gcId; if (apelidos) ex.apelidos = apelidos; }
+    else S.casais.push({ id: uid('c'), nome, apelidos, gcId: gc?.id || '', fotoId: null });
+    n++;
+  }
+  save(); renderAdmin();
+  $('#csvMsg').textContent = `${n} casais importados/atualizados${novos ? `, ${novos} GCs criados` : ''}.`;
+}
+function hslToHex(h) {
+  const d = document.createElement('div'); d.style.color = h; document.body.appendChild(d);
+  const m = getComputedStyle(d).color.match(/\d+/g); d.remove();
+  return '#' + m.slice(0, 3).map(x => (+x).toString(16).padStart(2, '0')).join('');
+}
+const toDataURL = b => new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); });
+async function exportJSON() {
+  const midia = {};
+  for (const [k, v] of await mAll()) midia[k] = { type: v.type, nome: v.nome, data: await toDataURL(v.blob) };
+  const blob = new Blob([JSON.stringify({ versao: 1, config: S, midia })], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = (S.evento.nome || 'evento').replace(/[^\w-]+/g, '_') + '.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+async function importJSON(file) {
+  try {
+    const d = JSON.parse(await file.text());
+    if (!d.config) throw new Error('arquivo sem config');
+    for (const [k] of await mAll()) await dropMedia(k);
+    for (const [k, v] of Object.entries(d.midia || {})) await mPut(k, { blob: await (await fetch(v.data)).blob(), type: v.type, nome: v.nome });
+    S = fix(d.config); await loadMedia(); applyTheme(); save(); renderAdmin();
+  } catch (err) { ask('Não consegui importar: ' + err.message, true); }
+}
+
+/* ================= TELA 2 · revelar GCs ================= */
+function renderRevela() {
+  const el = $('#revela'), x = T().txt;
+  const nextI = S.gcs.findIndex(g => !S.gcsRevelados.includes(g.id));
+  el.innerHTML = `<div class="stage synth">${logoHTML()}
+    <div class="kicker">${esc(S.evento.nome)}</div>
+    <h1>${esc(x.revela)}</h1><div class="sub">${esc(S.evento.subtitulo)}</div>
+    ${S.gcs.length ? `<div class="cards">${S.gcs.map((g, i) => {
+      const on = S.gcsRevelados.includes(g.id);
+      return `<div class="card ${on ? 'flip' : ''} ${i === nextI ? 'next' : ''}" data-i="${i}" style="--c:${esc(col(g))}"><div class="in">
+        <div class="face front"><div class="q">?</div><div class="n">GC ${i + 1}</div><div class="ps">${esc(x.start)}</div></div>
+        <div class="face back">${g.fotoId && URLS[g.fotoId] ? `<img src="${URLS[g.fotoId]}" alt="">` : ''}<div class="gn">${esc(g.nome)}</div>
+          <div class="gl">${g.lideres.map(l => esc(l.nome)).join(' · ')}</div></div></div></div>`;
+    }).join('')}</div>` : '<p class="empty">Nenhum GC cadastrado. Vá ao Admin (tecla 1).</p>'}
+    <div class="stage-tools"><button class="btn sm" data-act="resetRev">Reiniciar (R)</button></div></div>`;
+}
+$('#revela').addEventListener('click', e => {
+  if (e.target.closest('[data-act=resetRev]')) return resetRevela();
+  const c = e.target.closest('.card'); if (c) revealGc(+c.dataset.i);
+});
+function resetRevela() { S.gcsRevelados = []; save(); renderRevela(); }
+async function revealGc(i) {
+  if (busy) return; const g = S.gcs[i]; if (!g) return;
+  busy = true;
+  const first = !S.gcsRevelados.includes(g.id);
+  if (first && g.videoId && URLS[g.videoId]) await playVideo(g.videoId);
+  if (first) {
+    S.gcsRevelados.push(g.id); save();
+    const card = $(`#revela .card[data-i="${i}"]`); card?.classList.remove('next'); card?.classList.add('flip');
+    sfx.flip(); await sleep(850); flash();
+  }
+  showSpot(revealHTML(g), col(g), renderRevela);
+  if (first) { shake($('#spot')); sfx.fanfare(); confetti(col(g)); }
+  busy = false;
+}
+function revealNext() { const i = S.gcs.findIndex(g => !S.gcsRevelados.includes(g.id)); if (i >= 0) revealGc(i); }
+
+/* ================= TELA 3 · qual seu GC ================= */
+const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  .replace(/\b(casal|familia|fam)\b/g, ' ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+function lev(a, b) {
+  const m = a.length, n = b.length; if (!m || !n) return m || n;
+  let p = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const c = [i];
+    for (let j = 1; j <= n; j++) c[j] = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    p = c;
+  }
+  return p[n];
+}
+const sim = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length);
+function score(q, c) {
+  const terms = [c.nome, ...(c.apelidos || '').split(',')].map(norm).filter(Boolean);
+  let best = 0;
+  for (const t of terms) {
+    if (t === q) return 1;
+    if (q.length >= 3 && t.includes(q)) best = Math.max(best, .85);
+    if (t.length >= 3 && q.includes(t)) best = Math.max(best, .8);
+    best = Math.max(best, sim(q, t));
+    for (const w of t.split(' ')) if (w.length >= 3) best = Math.max(best, sim(q, w) * .95);
+  }
+  return best;
+}
+function search(raw) {
+  const q = norm(raw); if (!q) return [];
+  return S.casais.filter(c => gcById(c.gcId)).map(c => ({ c, s: score(q, c) })).filter(x => x.s >= .72).sort((a, b) => b.s - a.s);
+}
+function renderBusca() {
+  const total = S.casais.length, rev = Object.keys(S.revelados).length, x = T().txt;
+  $('#busca').innerHTML = `<div class="stage synth">${logoHTML()}
+    <div class="kicker">${esc(S.evento.nome)}</div>
+    <h1>Qual é o seu GC?</h1><div class="sub">Digite o nome do casal e aperte Enter</div>
+    <div class="searchbox"><input id="q" autocomplete="off" spellcheck="false" placeholder="${esc(x.ph)}" aria-label="Nome do casal"></div>
+    <div class="hint blink">${esc(x.hint)}</div>
+    <div class="msg" id="msg"></div><div class="choices" id="choices"></div>
+    <div class="xp"><div class="xp-l">${esc(x.prog)}</div><div class="xp-bar"><i style="width:${total ? rev / total * 100 : 0}%"></i></div><div class="xp-n">${rev}/${total}</div></div>
+    <div class="stage-tools"><button class="btn sm" data-act="lista">Lista manual</button></div></div>`;
+  const q = $('#q'); q.focus();
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); onSearch(q.value); }
+    if (e.key === 'Escape') q.blur();
+  });
+}
+$('#busca').addEventListener('click', e => {
+  const ch = e.target.closest('[data-cid]'); if (ch) return revealCasal(S.casais.find(c => c.id === ch.dataset.cid));
+  if (e.target.closest('[data-act=lista]')) {
+    $('#msg').className = 'msg'; $('#msg').textContent = 'Escolha o casal:';
+    $('#choices').innerHTML = S.casais.filter(c => gcById(c.gcId)).map(c => `<button data-cid="${c.id}">${esc(c.nome)}${S.revelados[c.id] ? ' ✓' : ''}</button>`).join('');
+  }
+});
+function onSearch(v) {
+  if (busy) return;
+  const r = search(v), msg = $('#msg'), ch = $('#choices');
+  ch.innerHTML = ''; msg.className = 'msg'; msg.textContent = '';
+  if (!v.trim()) return;
+  if (!r.length) { msg.className = 'msg err'; msg.textContent = 'Não encontramos esse nome. Tente o sobrenome do casal.'; sfx.erro(); return; }
+  const [a, b] = r;
+  if (a.s === 1 && (!b || b.s < 1) || a.s >= .9 && (!b || a.s - b.s >= .1)) return revealCasal(a.c);
+  msg.textContent = 'Qual destes é o de vocês?';
+  ch.innerHTML = r.slice(0, 6).map(x => `<button data-cid="${x.c.id}">${esc(x.c.nome)}</button>`).join('');
+}
+async function revealCasal(c) {
+  const gc = c && gcById(c.gcId); if (!gc || busy) return;
+  busy = true; $('#q')?.blur(); sfx.coin();
+  await versus(c, gc);
+  S.revelados[c.id] = new Date().toISOString(); save();
+  showSpot(revealHTML(gc, c), col(gc), renderBusca);
+  shake($('#spot')); sfx.fanfare(); confetti(col(gc));
+  busy = false;
+}
+/* a animação é só suspense: termina sempre no GC já cadastrado para o casal */
+async function versus(c, target) {
+  const el = $('#vs'), mid = $('#vsMid'), slot = $('.vs-slot', el), gcEl = $('#vsGc'), x = T().txt, neutro = getComputedStyle(document.documentElement).getPropertyValue('--ac').trim();
+  $('#vsT1').textContent = x.p1; $('#vsT2').textContent = x.p2;
+  $('#vsPhoto').innerHTML = frameInner(c); $('#vsPhoto').style.setProperty('--fc', 'var(--tx)');
+  $('#vsName').textContent = c.nome; gcEl.textContent = '???'; $('#vsLids').textContent = '';
+  el.style.setProperty('--c', neutro); el.classList.remove('hidden', 'match');
+  await sleep(350);
+  for (const n of ['3', '2', '1']) { mid.textContent = n; restartAnim(mid, 'pop'); sfx.beep(); await sleep(700); }
+  mid.textContent = x.mid; restartAnim(mid, 'pop'); sfx.go();
+  const gs = S.gcs, L = gs.length, total = (S.evento.suspense || 3.5) * 1000;
+  if (T().decode) {
+    const cs = T().charset; let t = 0, k = 0;
+    while (t < total * .55) { gcEl.textContent = scramble(gs[k++ % L].nome, 0, cs); sfx.tick(); await sleep(70); t += 70; }
+    await decodeTo(gcEl, target.nome, total * .45);
+    el.style.setProperty('--c', col(target));
+  } else {
+    const delays = []; let d = 50, t = 0;
+    while (t < total) { delays.push(d); t += d; d *= 1.075; }
+    const n = delays.length, ti = gs.indexOf(target), start = (((ti - (n - 1)) % L) + L) % L;
+    for (let k = 0; k < n; k++) {
+      const g = gs[(start + k) % L];
+      gcEl.textContent = g.nome; el.style.setProperty('--c', col(g));
+      sfx.tick(); await sleep(delays[k]);
+    }
+  }
+  el.classList.add('match'); mid.textContent = x.match; restartAnim(mid, 'pop');
+  $('#vsLids').textContent = target.lideres.map(l => l.nome).join(' · ');
+  flash(); shake(slot); blip(1047, .5, 0, T().wave, .08);
+  await sleep(1400);
+  el.classList.add('hidden');
+}
+
+/* ================= TELA 4 · painel ================= */
+let painelTodos = false;
+function renderPainel() {
+  const rev = Object.keys(S.revelados).length;
+  $('#painel').innerHTML = `<div class="stage synth">${logoHTML()}
+    <div class="kicker">${esc(S.evento.nome)}</div><h1>${esc(T().txt.painel)}</h1>
+    <div class="sub">${rev} de ${S.casais.length} casais já descobriram seu GC</div>
+    <div class="board">${S.gcs.map(g => {
+      const todos = S.casais.filter(c => c.gcId === g.id), feitos = todos.filter(c => S.revelados[c.id]);
+      const cs = painelTodos ? todos : feitos;
+      return `<div class="col" style="--c:${esc(col(g))}"><h3>${esc(g.nome)}</h3>
+        <div class="ld">Líderes: ${g.lideres.map(l => esc(l.nome)).join(', ') || '—'}</div>
+        <div class="hp"><div><i style="width:${todos.length ? feitos.length / todos.length * 100 : 0}%"></i></div><span>${feitos.length}/${todos.length}</span></div>
+        <ul>${cs.map(c => `<li class="${S.revelados[c.id] ? '' : 'pend'}">${avatar(c, 'sm')}${esc(c.nome)}</li>`).join('') || '<li class="pend">aguardando…</li>'}</ul></div>`;
+    }).join('')}</div>
+    <div class="stage-tools"><button class="btn sm" data-act="todos">${painelTodos ? 'Só revelados' : 'Mostrar todos'}</button></div></div>`;
+}
+$('#painel').addEventListener('click', e => { if (e.target.closest('[data-act=todos]')) { painelTodos = !painelTodos; renderPainel(); } });
+
+/* ================= reiniciar e desfazer ================= */
+const REINICIOS = {
+  gcs: {
+    titulo: 'Cartas dos GCs', desc: 'Fecha de novo todas as cartas da tela Revelar GCs.',
+    msg: 'Fechar de novo todas as cartas dos GCs?', ok: 'Cartas dos GCs reiniciadas',
+    fazer: async () => { S.gcsRevelados = []; },
+  },
+  casais: {
+    titulo: 'Casais', desc: 'Volta todos os casais para “aguardando” e esvazia o Painel.',
+    msg: 'Voltar todos os casais para “aguardando”? O Painel fica vazio.', ok: 'Casais reiniciados',
+    fazer: async () => { S.revelados = {}; },
+  },
+  revelacoes: {
+    titulo: 'Evento inteiro', desc: 'Cartas dos GCs e casais voltam ao início. O cadastro continua igual.',
+    msg: 'Reiniciar o evento inteiro? As cartas dos GCs e os casais voltam ao início. GCs, casais, fotos e vídeos continuam cadastrados.', ok: 'Evento reiniciado',
+    fazer: async () => { S.gcsRevelados = []; S.revelados = {}; },
+  },
+  cadastro: {
+    titulo: 'Apagar cadastro', desc: 'Remove GCs, casais, fotos e vídeos. Use para começar o evento real.', perigo: true,
+    msg: 'Apagar todos os GCs, casais, fotos e vídeos? O nome do evento, o logo e o tema ficam. Não dá para desfazer.', ok: 'Cadastro apagado',
+    fazer: async () => {
+      const ids = [...S.gcs.flatMap(g => [g.fotoId, g.videoId, ...g.lideres.map(l => l.fotoId)]), ...S.casais.map(c => c.fotoId)];
+      for (const id of ids) await dropMedia(id);
+      S.gcs = []; S.casais = []; S.gcsRevelados = []; S.revelados = {};
+    },
+  },
+  exemplo: {
+    titulo: 'Dados de exemplo', desc: 'Troca tudo pelos 4 GCs e 12 casais fictícios, para ensaiar.', perigo: true,
+    msg: 'Trocar tudo pelos dados de exemplo? GCs, casais, fotos, vídeos e logo atuais serão apagados. Não dá para desfazer.', ok: 'Dados de exemplo restaurados',
+    fazer: async () => { for (const [k] of await mAll()) await dropMedia(k); const tema = S.evento.tema; S = demo(); S.evento.tema = tema; },
+  },
+};
+function blocoReiniciar() {
+  return `<div class="reset-grid">${Object.entries(REINICIOS).map(([k, r]) => `
+    <button class="reset-card ${r.perigo ? 'perigo' : ''}" data-reset="${k}"><b>${r.titulo}</b><small>${r.desc}</small></button>`).join('')}</div>`;
+}
+async function reiniciar(k) {
+  const r = REINICIOS[k];
+  if (!r || !await ask(r.msg)) return;
+  await r.fazer();
+  applyTheme(); save(); go(screen); toast(r.ok, 2500);
+}
+function desfazer(tipo, id) {
+  if (tipo === 'casal') delete S.revelados[id];
+  else S.gcsRevelados = S.gcsRevelados.filter(g => g !== id);
+  save(); go(screen); toast('Revelação desfeita', 2000);
+}
+document.addEventListener('click', e => {
+  const r = e.target.closest('[data-reset]'); if (r) return reiniciar(r.dataset.reset);
+  const d = e.target.closest('[data-desfazer]'); if (d) desfazer(d.dataset.desfazer, d.dataset.id);
+});
+
+/* ================= teclado ================= */
+const SCREENS = ['admin', 'revela', 'busca', 'painel'];
+document.addEventListener('keydown', e => {
+  if (e.altKey && /^Digit[1-4]$/.test(e.code)) { e.preventDefault(); return go(SCREENS[+e.code.slice(-1) - 1]); }
+  if (!$('#ask').classList.contains('hidden')) return;
+  if (vidDone) { if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); vidDone(); } return; }
+  if (!$('#spot').classList.contains('hidden')) { if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); closeSpot(); } return; }
+  if (busy || e.target.matches('input,textarea,select') || e.metaKey || e.ctrlKey) return;
+  const k = e.key.toLowerCase();
+  if (/^[1-4]$/.test(k)) { e.preventDefault(); return go(SCREENS[+k - 1]); }
+  if (k === 't') { e.preventDefault(); const ks = Object.keys(TEMAS); return setTema(ks[(ks.indexOf(S.evento.tema) + 1) % ks.length]); }
+  if (k === 'f') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.()?.catch(() => {}); return; }
+  if (k === 'h') { document.body.classList.toggle('present'); return; }
+  if (screen === 'revela' && (k === ' ' || k === 'arrowright')) { e.preventDefault(); revealNext(); }
+  if (screen === 'revela' && k === 'r') resetRevela();
+  if (screen === 'busca' && k !== 'escape') $('#q')?.focus();
+});
+addEventListener('resize', () => { sizeCanvas(); fxStart(); });
+
+/* ================= início ================= */
+(async () => {
+  await openDB();
+  let s = null; try { s = await kvGet('config'); } catch (e) {}
+  S = fix(s || demo());
+  if (!s) try { await kvPut('config', S); } catch (e) {}
+  await loadMedia(); applyTheme();
+  const h = location.hash.slice(1);
+  go(SCREENS.includes(h) ? h : 'admin');
+})();
+</script>
+</body>
+</html>
