@@ -91,3 +91,7 @@ O workflow [`.github/workflows/build.yml`](.github/workflows/build.yml):
 ```
 git tag v1.0.1 && git push origin v1.0.1
 ```
+
+## Licença
+
+[MIT](LICENSE). As fontes em `revelacao/static/fonts/` vêm do [Google Fonts](https://fonts.google.com/) e seguem a licença de cada família (SIL Open Font License).

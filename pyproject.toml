@@ -3,6 +3,7 @@ name = "revelacao-gc"
 version = "1.0.0"
 description = "Aplicativo desktop para a revelação dos novos GCs na multiplicação"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115",
