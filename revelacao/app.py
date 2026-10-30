@@ -31,7 +31,9 @@ def liberar_autoplay() -> None:
     """O telão nunca recebe clique; sem isto o WebView do Windows e do Linux bloqueia som e vídeo."""
     flag = "--autoplay-policy=no-user-gesture-required"
     if sys.platform == "win32":
-        os.environ.setdefault("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", f"--disable-features=ElasticOverscroll {flag}")
+        # O pywebview monta os argumentos do WebView2 sozinho (a variável de ambiente é ignorada); este ajuste
+        # é o único texto que ele concatena neles. Com valor vazio, a porta de depuração não é aberta.
+        webview.settings["REMOTE_DEBUGGING_PORT"] = f" {flag}"
     elif sys.platform.startswith("linux"):
         atual = os.environ.get("QTWEBENGINE_CHROMIUM_FLAGS", "")
         if flag not in atual:
